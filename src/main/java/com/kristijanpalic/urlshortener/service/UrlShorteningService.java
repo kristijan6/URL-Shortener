@@ -77,14 +77,14 @@ public class UrlShorteningService {
         return buildStartOfTheShortUrl() + shortUrl;
     }
 
-    public String getOriginalUrl(String shortUrl) {
+    public UrlEncoding getOriginalUrl(String shortUrl) {
         Optional<UrlEncoding> urlEncodingOptional = urlEncodingRepository.findOneByShortUrl(shortUrl);
 
         UrlEncoding urlEncoding = urlEncodingOptional.get();
         urlEncoding.setNumberOfTimesUsed(urlEncoding.getNumberOfTimesUsed()+1);
         urlEncodingRepository.save(urlEncoding);
 
-        return urlEncoding.getOriginalUrl();
+        return urlEncoding;
     }
 
     private String buildStartOfTheShortUrl() {
@@ -97,7 +97,15 @@ public class UrlShorteningService {
         Map<String, Integer> statistics = new HashMap<>(urlEncodings.size());
 
         for(UrlEncoding urlEncoding : urlEncodings) {
-            statistics.put(urlEncoding.getOriginalUrl(), urlEncoding.getNumberOfTimesUsed());
+            // If there are multiple shortcodes that redirect to the same URL, sum their times used
+            if (statistics.containsKey(urlEncoding.getOriginalUrl())) {
+                statistics.put(
+                        urlEncoding.getOriginalUrl(),
+                        statistics.get(urlEncoding.getOriginalUrl()) + urlEncoding.getNumberOfTimesUsed()
+                );
+            } else {
+                statistics.put(urlEncoding.getOriginalUrl(), urlEncoding.getNumberOfTimesUsed());
+            }
         }
 
         return statistics;

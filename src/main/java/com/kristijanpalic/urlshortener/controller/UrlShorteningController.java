@@ -1,5 +1,6 @@
 package com.kristijanpalic.urlshortener.controller;
 
+import com.kristijanpalic.urlshortener.model.UrlEncoding;
 import com.kristijanpalic.urlshortener.model.dto.AccountRequestDTO;
 import com.kristijanpalic.urlshortener.model.dto.AccountResponseDTO;
 import com.kristijanpalic.urlshortener.model.dto.RegisterUrlRequestDTO;
@@ -48,8 +49,9 @@ public class UrlShorteningController {
 
     @GetMapping("/{shortUrl}")
     public void redirect(@PathVariable String shortUrl, HttpServletResponse httpServletResponse) throws IOException {
-        httpServletResponse.sendRedirect(urlShorteningService.getOriginalUrl(shortUrl));
-        httpServletResponse.setStatus(302);
+        UrlEncoding urlEncoding = urlShorteningService.getOriginalUrl(shortUrl);
+        httpServletResponse.sendRedirect(urlEncoding.getOriginalUrl());
+        httpServletResponse.setStatus(urlEncoding.getRedirectType());
 
         //httpServletResponse.setStatus(404);
     }
