@@ -43,7 +43,7 @@ public class UrlShorteningService {
 
         if (inMemoryUserDetailsManager.userExists(accountRequestDTO.getAccountId())) {
             responseDTO.setSuccess(false);
-            responseDTO.setDescription(String.format("User with id '%s' has already been created. Please user another account id.", accountRequestDTO.getAccountId()));
+            responseDTO.setDescription(String.format("User with id '%s' has already been created. Please use another account id.", accountRequestDTO.getAccountId()));
             return responseDTO;
         }
 
