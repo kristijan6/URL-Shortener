@@ -57,8 +57,9 @@ public class UrlShorteningController {
     }
 
     @GetMapping("/help")
-    public String help() {
-        return "here is your help page.";
+    public void help(HttpServletResponse httpServletResponse) throws IOException {
+        httpServletResponse.sendRedirect("https://github.com/kristijan6/URL-Shortener");
+        httpServletResponse.setStatus(302);
     }
 
     private String readAccountIdFromHeader(String auth) {
