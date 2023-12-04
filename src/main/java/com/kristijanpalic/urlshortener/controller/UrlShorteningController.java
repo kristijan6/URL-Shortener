@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -50,10 +51,14 @@ public class UrlShorteningController {
     @GetMapping("/{shortUrl}")
     public void redirect(@PathVariable String shortUrl, HttpServletResponse httpServletResponse) throws IOException {
         UrlEncoding urlEncoding = urlShorteningService.getOriginalUrl(shortUrl);
+
+        if (urlEncoding == null) {
+            httpServletResponse.setStatus(HttpStatus.NOT_FOUND.value());
+            return;
+        }
+
         httpServletResponse.sendRedirect(urlEncoding.getOriginalUrl());
         httpServletResponse.setStatus(urlEncoding.getRedirectType());
-
-        //httpServletResponse.setStatus(404);
     }
 
     @GetMapping("/help")

@@ -80,6 +80,8 @@ public class UrlShorteningService {
     public UrlEncoding getOriginalUrl(String shortUrl) {
         Optional<UrlEncoding> urlEncodingOptional = urlEncodingRepository.findOneByShortUrl(shortUrl);
 
+        if (urlEncodingOptional.isEmpty()) return null;
+
         UrlEncoding urlEncoding = urlEncodingOptional.get();
         urlEncoding.setNumberOfTimesUsed(urlEncoding.getNumberOfTimesUsed()+1);
         urlEncodingRepository.save(urlEncoding);
